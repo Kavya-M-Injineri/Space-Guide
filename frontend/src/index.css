@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap');
+
+:root {
+  --space-dark: #020617;
+  --space-card: rgba(30, 41, 59, 0.5);
+  --neon-blue: #38bdf8;
+  --neon-purple: #a855f7;
+  --neon-danger: #ef4444;
+  --neon-glow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Rajdhani', sans-serif;
+  background-color: var(--space-dark);
+  color: #e2e8f0;
+  overflow-x: hidden;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(56, 189, 248, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(168, 85, 247, 0.05) 0%, transparent 50%);
+}
+
+h1,
+h2,
+h3,
+.font-orbitron {
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: 2px;
+}
+
+/* Glassmorphism */
+.glass-panel {
+  background: var(--space-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+}
+
+.neon-border {
+  border: 1px solid var(--neon-blue);
+  box-shadow: var(--neon-glow);
+}
+
+.neon-text {
+  color: var(--neon-blue);
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.8);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--space-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--neon-blue);
+}
+
+/* Animations */
+@keyframes pulse-glow {
+  0% {
+    opacity: 0.5;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.5;
+  }
+}
+
+.pulse {
+  animation: pulse-glow 2s infinite ease-in-out;
+}
