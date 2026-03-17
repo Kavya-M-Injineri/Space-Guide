@@ -1,91 +1,104 @@
----
-title: SpaceGuard
-emoji: 🛰️
-colorFrom: blue
-colorTo: indigo
-sdk: docker
-app_port: 7860
-pinned: false
+# SpaceGuard — Spacecraft Anomaly Detection Platform
+
+An intelligent telemetry monitoring system that uses an **LSTM Autoencoder** to detect anomalies in spacecraft sensor data — with adaptive thresholding, feature-level attribution, role-based access control, and a real-time React dashboard. Deployed on Hugging Face Spaces via Docker.
+
 ---
 
-# SpaceGuard: Intelligent Anomaly Detection for Spacecraft
+## Highlights
 
-SpaceGuard is a platform built to monitor spacecraft health by detecting unusual patterns in telemetry data. It was designed to bridge the gap between complex deep learning models and the practical needs of mission operators, providing clear insights into system behavior when it matters most.
+- Trained an **LSTM Autoencoder** to model normal spacecraft sensor behavior, flagging anomalies based on reconstruction error — enabling detection of subtle, gradual deviations that fixed-threshold systems miss
+- Implemented **Peak-Over-Threshold (POT) adaptive thresholding** — limits self-adjust to changing sensor baselines, reducing false positives in dynamic operating conditions
+- Built **feature attribution** into the anomaly pipeline — identifies which specific sensors contributed most to each alert, giving operators actionable "why" alongside the detection
+- Designed a **3-tier incident classification system** (Info / Warning / Critical) based on deviation magnitude, enabling priority-based operator response
+- Implemented **JWT authentication with RBAC** (Admin / Operator roles), structured audit logging for every detection event, and access-controlled API routes
+- Deployed as a **Dockerized Hugging Face Space** with a React + Framer Motion frontend featuring real-time visual threat indicators (radar pulses, theme shifts on alert)
 
-## Purpose and Key Features
+---
 
-The project focuses on making spacecraft data more actionable. Here is a breakdown of what the system does.
+## Tech Stack
 
-### Core Intelligence
-The system uses an LSTM Autoencoder to learn the normal behavior of spacecraft sensors. By understanding what "normal" looks like, it can identify subtle deviations that might signal a problem.
-- **Adaptive Limits**: Instead of using fixed thresholds, the system uses the Peak-Over-Threshold algorithm to adjust to changing conditions.
-- **Incident Categorization**: Anomalies are classified as Info, Warning, or Critical based on how much they deviate from expected patterns.
-- **Insights into Causes**: Using feature attribution, the system highlights which specific sensors contributed to an alert, helping operators understand the "why" behind an anomaly.
+| Layer | Technology |
+|---|---|
+| ML Model | TensorFlow, Keras (LSTM Autoencoder) |
+| Anomaly Thresholding | Peak-Over-Threshold (POT) algorithm |
+| Backend | Python, Flask |
+| Auth | JWT + RBAC (Admin / Operator) |
+| Frontend | React, Vite, Framer Motion |
+| Deployment | Docker, Hugging Face Spaces |
 
-### Security and Access
-Security was a priority during development to ensure that mission data remains protected.
-- **Verified Access**: Secure login using JSON Web Tokens ensures only authorized personnel can access the terminal.
-- **Roles and Permissions**: Built-in support for different user levels, such as Admin and Operator.
-- **Audit Trails**: Every significant event and detection is logged in a structured format for later review.
+---
 
-### Human-Centric Interface
-The dashboard was designed to provide high situational awareness without overwhelming the user.
-- **Real-time Feedback**: The interface reacts to threats with visual cues like radar pulses and theme shifts.
-- **Performance Analytics**: A dedicated view for reviewing model health, training loss, and historical detection rates.
+## Model Design
 
-## Technical Details
-The system is built on a modern stack for both performance and reliability.
-- **Backend**: Python, Flask, and TensorFlow handle the heavy lifting of data processing and model inference.
-- **Frontend**: A responsive React interface built with Vite and Framer Motion for smooth, interactive feedback.
-- **Deployment**: Configured with Docker for consistent environments.
+- **Architecture:** LSTM Autoencoder — encoder compresses temporal sensor sequences, decoder reconstructs them; high reconstruction error signals anomaly
+- **Thresholding:** POT dynamically sets alert boundaries from the tail distribution of reconstruction errors
+- **Attribution:** Per-feature reconstruction error breakdown highlights which sensors triggered the alert
+- **Severity:** Deviation magnitude mapped to Info / Warning / Critical tiers
 
-## Getting Started
+---
+
+## Setup
 
 ### Prerequisites
-You will need Python 3.9 or higher and Node.js 18 or higher installed on your machine.
+- Python 3.9+, Node.js 18+
 
-### Installation Steps
+### Backend
+```bash
+git clone https://github.com/Kavya-M-Injineri/Space-Guide.git
+cd Space-Guide/backend
+pip install -r ../requirements.txt
+python app.py
+```
 
-1. **Get the code**
-   ```bash
-   git clone https://github.com/Kavya-M-Injineri/Space-Guide.git
-   cd Space-Guide
-   ```
+### Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-2. **Backend Setup**
-   ```bash
-   cd backend
-   pip install -r ../requirements.txt
-   python app.py
-   ```
+### Default Credentials
+| Field | Value |
+|---|---|
+| Service ID | `admin` |
+| Access Key | `alpha9` |
 
-3. **Frontend Setup**
-   ```bash
-   cd frontend
-   npm install
-   npm run dev
-   ```
+---
 
-### Accessing the Terminal
-Use these credentials for the initial login:
-- **Service ID**: admin
-- **Access Key**: alpha9
+## Deploy to Hugging Face Spaces
 
-### Manual Deployment (Hugging Face CLI)
-If you cannot connect GitHub directly, you can push the code directly to Hugging Face:
+```bash
+# Add HF remote
+git remote add hf https://huggingface.co/spaces/YOUR_USERNAME/YOUR_SPACE_NAME
 
-1. **Create the Space**: Go to Hugging Face, create a New Space, and select **Docker** as the SDK.
-2. **Add the Remote**: Run these commands in your local project terminal:
-   ```bash
-   git remote add hf https://huggingface.co/spaces/YOUR_USERNAME/YOUR_SPACE_NAME
-   ```
-3. **Push to HF**: 
-   ```bash
-   git push -f hf main
-   ```
-   *(When prompted, use your Hugging Face username and your **Access Token** as the password).*
+# Push (use HF Access Token as password when prompted)
+git push -f hf main
+```
 
-## Future Goals
-The project is ongoing, with plans to include better time-to-failure predictions and a more robust suite for benchmarking model performance against different neural architectures.
+Space SDK: **Docker** · App port: **7860**
 
-Mission Status: Fully Operational | Security Level: Alpha-9
+---
+
+## Project Structure
+
+```
+├── backend/
+│   ├── app.py              # Flask API — inference, auth, logging
+│   ├── model/              # LSTM Autoencoder + POT thresholder
+│   └── requirements.txt
+├── frontend/
+│   └── src/
+│       ├── components/     # Dashboard, radar display, alert panels
+│       └── contexts/       # Auth + alert state
+├── Dockerfile
+└── requirements.txt
+```
+
+---
+
+## Roadmap
+
+- Time-to-failure prediction using remaining useful life (RUL) estimation
+- Multi-architecture benchmarking (LSTM vs Transformer vs CNN Autoencoder)
+- Improved anomaly clustering for pattern-based incident grouping
+-
